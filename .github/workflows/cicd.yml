@@ -11,8 +11,7 @@ jobs:
 
     steps:
       - name: Set up Git
-        run: |
-          echo "ACTION=${{ secrets.ACTION }}" >> $GITHUB_ENV
+        run: echo "ACTION=${{ secrets.ACTION }}" >> $GITHUB_ENV
 
       - name: Checkout repository
         if: env.ACTION == 'create'
@@ -25,7 +24,7 @@ jobs:
         if: env.ACTION == 'create'
         uses: actions/setup-java@v3
         with:
-          java-version: "11"
+          java-version: '11'
 
       - name: Unit Test with Maven
         if: env.ACTION == 'create'
@@ -34,24 +33,28 @@ jobs:
       - name: Integration Test with Maven
         if: env.ACTION == 'create'
         run: mvn verify -DskipUnitTests
+
       - name: SonarQube Scan
+        if: env.ACTION == 'create'
         uses: sonarsource/sonarqube-scan-action@master
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.organization=my-org
+            -Dsonar.projectKey=my-Java-web-app
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-  
-      # Check the Quality Gate status.
+
       - name: SonarQube Quality Gate check
+        if: env.ACTION == 'create'
         id: sonarqube-quality-gate-check
         uses: sonarsource/sonarqube-quality-gate-action@master
-        # Force to fail step after specific time.
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #OPTIONAL
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-      # Optionally you can use the output from the Quality Gate in another step.
-      # The possible outputs of the `quality-gate-status` variable are `PASSED`, `WARN` or `FAILED`.
-      - name: "Example show SonarQube Quality Gate Status value"
+      - name: Show SonarQube Quality Gate Status
+        if: env.ACTION == 'create'
         run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
-    
