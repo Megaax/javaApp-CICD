@@ -1,0 +1,36 @@
+name: Java Application CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Git
+        run: |
+          echo "ACTION=${{ secrets.ACTION }}" >> $GITHUB_ENV
+
+      - name: Checkout repository
+        if: env.ACTION == 'create'
+        uses: actions/checkout@v3
+        with:
+          repository: Megaax/javaApp-CICD
+          ref: main
+
+      - name: Set up JDK 11
+        if: env.ACTION == 'create'
+        uses: actions/setup-java@v3
+        with:
+          java-version: "11"
+
+      - name: Unit Test with Maven
+        if: env.ACTION == 'create'
+        run: mvn test
+
+      - name: Integration Test with Maven
+        if: env.ACTION == 'create'
+        run: mvn verify -Pintegration-test
