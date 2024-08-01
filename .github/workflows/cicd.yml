@@ -33,4 +33,4 @@ jobs:
 
       - name: Integration Test with Maven
         if: env.ACTION == 'create'
-        run: mvn verify -Pintegration-test
+        run: mvn verify -DskipUnitTests
