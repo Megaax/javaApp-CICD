@@ -20,6 +20,12 @@ jobs:
         with:
           java-version: "11"
           distribution: "temurin"  # Specify the JDK distribution
+      
+      - name: Unit Test with Maven
+        run: mvn test
+  
+      - name: Integration Test with Maven
+        run: mvn verify -DskipUnitTests
 
       - name: Cache Maven packages
         uses: actions/cache@v3
@@ -40,12 +46,6 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-
-      - name: Unit Test with Maven
-        run: mvn test
-
-      - name: Integration Test with Maven
-        run: mvn verify -DskipUnitTests
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
