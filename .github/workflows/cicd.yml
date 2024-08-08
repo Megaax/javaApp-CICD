@@ -45,20 +45,14 @@ jobs:
       - name: Integration Test with Maven
         run: mvn verify -DskipUnitTests
 
-      - name: Build and analyze
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.organization=my-org
+            -Dsonar.projectKey=my-Java-web-app
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-
-      # - name: SonarQube Scan
-      #   uses: sonarsource/sonarqube-scan-action@master
-      #   with:
-      #     projectBaseDir: .
-      #     args: >
-      #       -Dsonar.projectKey=my-Java-web-app
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       
