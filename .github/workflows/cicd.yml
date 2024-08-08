@@ -46,7 +46,9 @@ jobs:
         run: mvn verify -DskipUnitTests
 
       - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@v2.1.0 # Ex: v2.1.0, See the latest version at https://github.com/marketplace/actions/official-sonarqube-scan
+        uses: sonarsource/sonarqube-scan-action@v2.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+          MAVEN_OPTS: -Dsonar.projectKey=my_project_key
+      
